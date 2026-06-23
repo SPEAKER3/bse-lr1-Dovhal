@@ -30,6 +30,23 @@ def is_draw(board):
     return all(cell in ("X", "O") for cell in board)
 
 
+def choose_player():
+    while True:
+        symbol = input("Choose your symbol (X/O): ").strip().upper()
+        if symbol in ("X", "O"):
+            return symbol
+        print("Invalid choice. Please enter X or O.")
+
+
+def show_end_screen(message):
+    border = "*" * (len(message) + 4)
+    print()
+    print(border)
+    print(f"* {message} *")
+    print(border)
+    print()
+
+
 def get_move(player, board):
     while True:
         try:
@@ -51,10 +68,13 @@ def get_move(player, board):
 
 def main():
     board = [str(i + 1) for i in range(9)]
-    current_player = "X"
+    user_symbol = choose_player()
+    opponent_symbol = "O" if user_symbol == "X" else "X"
+    current_player = user_symbol
 
     print("Tic Tac Toe")
     print("Enter a number from 1 to 9 to place your mark. Type q to quit.")
+    print(f"You are {user_symbol}. {current_player} goes first.")
 
     while True:
         display_board(board)
@@ -64,15 +84,18 @@ def main():
         winner = check_winner(board)
         if winner:
             display_board(board)
-            print(f"Player {winner} wins!")
+            if winner == user_symbol:
+                show_end_screen("Congratulations! You win!")
+            else:
+                show_end_screen("Sorry, you lose.")
             break
 
         if is_draw(board):
             display_board(board)
-            print("The game is a draw.")
+            show_end_screen("The game is a draw.")
             break
 
-        current_player = "O" if current_player == "X" else "X"
+        current_player = opponent_symbol if current_player == user_symbol else user_symbol
 
 
 if __name__ == "__main__":
